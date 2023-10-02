@@ -25,8 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <Cougar/Utils/AlignedAllocator.h>
-#include <Cougar/Utils/FixedSizeAllocator.h>
+#include <Cougar/AlignedAllocator.h>
+#include <Cougar/FixedSizeAllocator.h>
 
 #include <cassert>
 #include <iostream>
