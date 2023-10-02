@@ -26,5 +26,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <img src="docs/Cougar.jpg" alt="Allocator Cougar" width="400" longdesc="https://htmlpreview.github.io/?https://github.com/hosseinmoein/Cougar/blob/master/README.md"/>
 
-This is a light-weight, header-only C++ Cougar-alarm library that's based on threads as opposed to the POSIX' signal based timers. Therefore, it is a lot less disruptive.<BR>
+This repo includes several STL conformant allocators. There are two categories of allocators here:
+1. Stack or Static based fixed size allocators. In this category you pre-allocate a fixed size of memory block either on the stack or statically. So you can have STL containers that are based on stack memory, for example. One of the side effects of these allocators is to overcome deficiencies in containers like <I>maps</I> and <I>lists</I> where their memory by default is not cache-friendly.
+2. Custom Aligned allocator. This allocator allows you to allocate memory on a custom boundary. This way you can take advantage of SIMD instructions and techniques. 
 
+Please see the [tester file](test/allocator_tester.cc) for code samples.
+
+This is the complete list of allocators in this repo:
+
+```cpp
+// An allocator that allows you to allocate memory for type T on boundary AS.
+// The default boundary is system default for type T.
+template<typename T, std::size_t AS = 0>
+AlignedAllocator
+```
+```cpp
+// This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes statically.
+// It used best-fit algorithm to find space. Best-fit is a bet slower,
+// but is causes considerably less fragmentations
+template<typename T, std::size_t MAX_SIZE>
+StaticBestFitAllocator
+```
+```cpp
+// This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes on the stack.
+// It used best-fit algorithm to find space. Best-fit is a bet slower,
+// but is causes considerably less fragmentations
+template<typename T, std::size_t MAX_SIZE>
+StackBestFitAllocator
+```
+```cpp
+// This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes statically.
+// It used first-fit algorithm to find space. First-fit is fast, but is causes more fragmentations
+template<typename T, std::size_t MAX_SIZE>
+StaticFirstFitAllocator
+```
+```cpp
+// This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes on the stack.
+// It used first-fit algorithm to find space. First-fit is fast, but is causes more fragmentations
+template<typename T, std::size_t MAX_SIZE>
+StackFirstFitAllocator
+```
