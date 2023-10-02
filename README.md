@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
-<img src="docs/Cougar.jpg" alt="Allocator Cougar" width="400" longdesc="https://htmlpreview.github.io/?https://github.com/hosseinmoein/Cougar/blob/master/README.md"/>
+<img src="docs/Cougar.tiff" alt="Allocator Cougar" width="400" longdesc="https://htmlpreview.github.io/?https://github.com/hosseinmoein/Cougar/blob/master/README.md"/>
 
 This repo includes several STL conformant allocators. There are two categories of allocators here:
 1. Stack or Static based fixed size allocators. In this category you pre-allocate a fixed size of memory block either on the stack or statically. So you can have STL containers that are based on stack memory, for example. One of the side effects of these allocators is to overcome deficiencies in containers like <I>maps</I> and <I>lists</I> where their memory by default is not cache-friendly.
