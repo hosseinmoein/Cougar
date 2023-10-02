@@ -56,13 +56,15 @@ StackBestFitAllocator
 ```
 ```cpp
 // This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes statically.
-// It used first-fit algorithm to find space. First-fit is fast, but is causes more fragmentations
+// It used first-fit algorithm to find space. First-fit is fast,
+// but is causes more fragmentations
 template<typename T, std::size_t MAX_SIZE>
 StaticFirstFitAllocator
 ```
 ```cpp
 // This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes on the stack.
-// It used first-fit algorithm to find space. First-fit is fast, but is causes more fragmentations
+// It used first-fit algorithm to find space. First-fit is fast,
+// but is causes more fragmentations
 template<typename T, std::size_t MAX_SIZE>
 StackFirstFitAllocator
 ```
