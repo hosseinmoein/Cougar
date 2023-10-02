@@ -24,6 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
+![GitHub](https://img.shields.io/github/license/hosseinmoein/DataFrame.svg?color=red&style=popout)
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/std/the-standard )
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/hosseinmoein/DataFrame/graphs/commit-activity)
+
 <img src="docs/Cougar.png" alt="Allocator Cougar" width="400" longdesc="https://htmlpreview.github.io/?https://github.com/hosseinmoein/Cougar/blob/master/README.md"/>
 
 This repo includes several STL conformant allocators. There are two categories of allocators here:
