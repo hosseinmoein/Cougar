@@ -369,13 +369,11 @@ struct  FirstFitStackBase : public StackStorage<T, MAX_SIZE>  {
     unsigned char *first_free_ptr_ { in_use_ };
 
     FirstFitStackBase() : Base()  { std::memset(in_use_, FREE_, MAX_SIZE); }
-    FirstFitStackBase(const FirstFitStackBase &that)
-        : Base(that), first_free_ptr_ (that.first_free_ptr_)  {
+    FirstFitStackBase(const FirstFitStackBase &that) : Base(that)  {
 
         std::memcpy(in_use_, that.in_use_, max_size);
     }
-    FirstFitStackBase(FirstFitStackBase &&that)
-        : Base(that), first_free_ptr_ (that.first_free_ptr_)  {
+    FirstFitStackBase(FirstFitStackBase &&that) : Base(that)  {
 
         std::memcpy(in_use_, that.in_use_, max_size);
     }
