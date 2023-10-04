@@ -46,28 +46,28 @@ AlignedAllocator
 ```
 ```cpp
 // This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes statically.
-// It used best-fit algorithm to find space. Best-fit is a bet slower,
+// It uses best-fit algorithm to find space. Best-fit is a bet slower,
 // but is causes considerably less fragmentations
 template<typename T, std::size_t MAX_SIZE>
 StaticBestFitAllocator
 ```
 ```cpp
 // This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes on the stack.
-// It used best-fit algorithm to find space. Best-fit is a bet slower,
+// It uses best-fit algorithm to find space. Best-fit is a bet slower,
 // but is causes considerably less fragmentations
 template<typename T, std::size_t MAX_SIZE>
 StackBestFitAllocator
 ```
 ```cpp
 // This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes statically.
-// It used first-fit algorithm to find space. First-fit is fast,
+// It uses first-fit algorithm to find space. First-fit is fast,
 // but is causes more fragmentations
 template<typename T, std::size_t MAX_SIZE>
 StaticFirstFitAllocator
 ```
 ```cpp
 // This allocator pre-allocates memory for MAX_SIZE * sizeof(T) bytes on the stack.
-// It used first-fit algorithm to find space. First-fit is fast,
+// It uses first-fit algorithm to find space. First-fit is fast,
 // but is causes more fragmentations
 template<typename T, std::size_t MAX_SIZE>
 StackFirstFitAllocator
