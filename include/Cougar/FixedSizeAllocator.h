@@ -52,20 +52,16 @@ struct  StaticStorage  {
 
     inline static constexpr size_type   max_size =
         MAX_SIZE * sizeof(value_type);
-    inline static constexpr bool        is_static = true;
-
-    StaticStorage() = default;
-    StaticStorage(const StaticStorage &) = delete;
-    StaticStorage(StaticStorage &&) = delete;
-    ~StaticStorage() = default;
-
-    StaticStorage &operator =(const StaticStorage &) = delete;
-    StaticStorage &operator =(StaticStorage &&) = delete;
 
     // Main allocation space
     //
     alignas(value_type[])
     inline static unsigned char buffer_[max_size];
+
+    StaticStorage() = default;
+    StaticStorage(const StaticStorage &) = default;
+    StaticStorage(StaticStorage &&) = default;
+    ~StaticStorage() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -78,20 +74,22 @@ struct  StackStorage  {
 
     inline static constexpr size_type   max_size =
         MAX_SIZE * sizeof(value_type);
-    inline static constexpr bool        is_static = false;
-
-    StackStorage() = default;
-    StackStorage(const StackStorage &) = delete;
-    StackStorage(StackStorage &&) = delete;
-    ~StackStorage() = default;
-
-    StackStorage &operator =(const StackStorage &) = delete;
-    StackStorage &operator =(StackStorage &&) = delete;
 
     // Main allocation space
     //
     alignas(value_type[])
     unsigned char buffer_[max_size];
+
+    StackStorage() = default;
+    StackStorage(const StackStorage &that)  {
+
+        std::memcpy(buffer_, that.buffer_, max_size);
+    }
+    StackStorage(StackStorage &&that)  {
+
+        std::memcpy(buffer_, that.buffer_, max_size);
+    }
+    ~StackStorage() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -230,9 +228,9 @@ struct  BestFitAlgo : public S  {
             bool        found_head = false;
 
             if (end_iter != free_blocks_end_.end())  {
-                const pointer   head_ptr =
-                    end_iter->first - end_iter->second;
-                const auto      head_block = free_blocks_assist_.find(head_ptr);
+                const pointer   head_ptr = end_iter->first - end_iter->second;
+                const auto      head_block =
+                    free_blocks_assist_.find(head_ptr);
 
                 if (head_block != free_blocks_assist_.end())  {
                     const size_type new_len =
@@ -324,7 +322,7 @@ struct  FirstFitStaticBase : public StaticStorage<T, MAX_SIZE>  {
     // The bitmap to indicate which slots are in use.
     //
     alignas(value_type[])
-    inline static unsigned char in_use_[MAX_SIZE];
+    inline static unsigned char in_use_[max_size];
 
     // Pointer to the first free slot.
     //
@@ -340,6 +338,9 @@ struct  FirstFitStaticBase : public StaticStorage<T, MAX_SIZE>  {
             return (0);
         });
     }
+    FirstFitStaticBase(const FirstFitStaticBase &that) = default;
+    FirstFitStaticBase(FirstFitStaticBase &&that) = default;
+    ~FirstFitStaticBase() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -358,7 +359,7 @@ struct  FirstFitStackBase : public StackStorage<T, MAX_SIZE>  {
     // The bitmap to indicate which slots are in use.
     //
     alignas(value_type[])
-    unsigned char in_use_[MAX_SIZE];
+    unsigned char in_use_[max_size];
 
     // Pointer to the first free slot.
     //
@@ -366,6 +367,15 @@ struct  FirstFitStackBase : public StackStorage<T, MAX_SIZE>  {
     unsigned char *first_free_ptr_ { in_use_ };
 
     FirstFitStackBase() : Base()  { std::memset(in_use_, FREE_, MAX_SIZE); }
+    FirstFitStackBase(const FirstFitStackBase &that) : Base(that)  {
+
+        std::memcpy(in_use_, that.in_use_, max_size);
+    }
+    FirstFitStackBase(FirstFitStackBase &&that) : Base(that)  {
+
+        std::memcpy(in_use_, that.in_use_, max_size);
+    }
+    ~FirstFitStackBase() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -378,7 +388,7 @@ struct  FirstFitAlgo : public S  {
     using size_type = Base::size_type;
     using pointer = unsigned char *;
 
-    FirstFitAlgo() : Base()  {  }
+    FirstFitAlgo() = default;
     ~FirstFitAlgo() = default;
 
     // Like malloc
@@ -448,7 +458,7 @@ struct  FirstFitAlgo : public S  {
 template<typename T, std::size_t MAX_SIZE,
          template<typename, std::size_t> typename STORAGE,
          template<typename> typename ALGO>
-class   FixedSizeAllocator : ALGO<STORAGE<T, MAX_SIZE>>  {
+class   FixedSizeAllocator : private ALGO<STORAGE<T, MAX_SIZE>>  {
 
     using AlgoBase = ALGO<STORAGE<T, MAX_SIZE>>;
 
@@ -489,15 +499,10 @@ public:
 
 public:
 
-    FixedSizeAllocator() : AlgoBase()  {  }
-    FixedSizeAllocator(const FixedSizeAllocator &that) = delete;
-    FixedSizeAllocator(FixedSizeAllocator &&) = delete;
+    FixedSizeAllocator() = default;
+    FixedSizeAllocator(const FixedSizeAllocator &) = default;
+    FixedSizeAllocator(FixedSizeAllocator &&) = default;
     ~FixedSizeAllocator() = default;
-
-    FixedSizeAllocator &
-    operator =(FixedSizeAllocator &&) = delete;
-    FixedSizeAllocator &
-    operator =(const FixedSizeAllocator &) = delete;
 
     template<typename U>
     FixedSizeAllocator(const FixedSizeAllocator<U, MAX_SIZE, STORAGE, ALGO> &) {

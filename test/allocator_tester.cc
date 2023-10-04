@@ -72,8 +72,13 @@ static void test_aligned_allocator()  {
         vec.reserve(NUM - 1);
         for (std::size_t i = 0; i < NUM; ++i)
             vec.push_back(double(i));
-        for (auto citer : vec)
-            std::cout << citer << ", ";
+
+        std::vector<double, AlignedAllocator<double, 512>>  vec2 = vec;
+
+        for (std::size_t i = 0; i < vec.size(); ++i)  {
+            assert(vec[i] == double(i));
+            assert(vec2[i] == double(i));
+        }
         std::cout << std::endl;
     }
     {
@@ -177,6 +182,15 @@ static void test_first_fit_static_allocator()  {
         vec1.push_back(int(i));
     for (std::size_t i = 0; i < 100000; ++i)
         assert(vec1[i] == int(i));
+
+    std::vector<int, StaticFirstFitAllocator<int, 1000000>> vec11 = vec1;
+
+    for (std::size_t i = 0; i < vec1.size(); ++i)
+        vec11[i] *= 10;
+    for (std::size_t i = 0; i < 100000; ++i)  {
+        assert(vec1[i] == int(i));
+        assert(vec11[i] == int(i) * 10);
+    }
 
     std::vector<int, StaticFirstFitAllocator<int, 100000>>  vec2;
 
@@ -285,11 +299,20 @@ static void test_first_fit_stack_allocator()  {
 
     std::vector<int, StackFirstFitAllocator<int, 10000>>    vec1;
 
-    vec1.reserve(1000);
+    vec1.reserve(100);
     for (std::size_t i = 0; i < 1000; ++i)
         vec1.push_back(int(i));
     for (std::size_t i = 0; i < 1000; ++i)
         assert(vec1[i] == int(i));
+
+    std::vector<int, StackFirstFitAllocator<int, 10000>>  vec11 = vec1;
+
+    for (std::size_t i = 0; i < vec1.size(); ++i)
+        vec11[i] *= 10;
+    for (std::size_t i = 0; i < 1000; ++i)  {
+        assert(vec1[i] == int(i));
+        assert(vec11[i] == int(i) * 10);
+    }
 
     std::vector<int, StackFirstFitAllocator<int, 1000>> vec2;
 
@@ -372,6 +395,15 @@ static void test_best_fit_static_allocator()  {
         vec1.push_back(int(i));
     for (std::size_t i = 0; i < 100000; ++i)
         assert(vec1[i] == int(i));
+
+    std::vector<int, StaticBestFitAllocator<int, 1000000>> vec11 = vec1;
+
+    for (std::size_t i = 0; i < vec1.size(); ++i)
+        vec11[i] *= 10;
+    for (std::size_t i = 0; i < 100000; ++i)  {
+        assert(vec1[i] == int(i));
+        assert(vec11[i] == int(i) * 10);
+    }
 
     std::vector<int, StaticBestFitAllocator<int, 100000>>  vec2;
 
@@ -478,13 +510,22 @@ static void test_best_fit_stack_allocator()  {
 
     std::cout << "\nTesting StackBestFitAllocator ..." << std::endl;
 
-    std::vector<int, StackBestFitAllocator<int, 10000>>    vec1;
+    std::vector<int, StackBestFitAllocator<int, 10000>> vec1;
 
     vec1.reserve(1000);
     for (std::size_t i = 0; i < 1000; ++i)
         vec1.push_back(int(i));
     for (std::size_t i = 0; i < 1000; ++i)
         assert(vec1[i] == int(i));
+
+    std::vector<int, StackBestFitAllocator<int, 10000>> vec11 = vec1;
+
+    for (std::size_t i = 0; i < vec1.size(); ++i)
+        vec11[i] *= 10;
+    for (std::size_t i = 0; i < 1000; ++i)  {
+        assert(vec1[i] == int(i));
+        assert(vec11[i] == int(i) * 10);
+    }
 
     std::vector<int, StackBestFitAllocator<int, 1000>> vec2;
 
