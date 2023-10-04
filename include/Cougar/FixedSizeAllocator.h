@@ -52,7 +52,6 @@ struct  StaticStorage  {
 
     inline static constexpr size_type   max_size =
         MAX_SIZE * sizeof(value_type);
-    inline static constexpr bool        is_static = true;
 
     // Main allocation space
     //
@@ -75,7 +74,6 @@ struct  StackStorage  {
 
     inline static constexpr size_type   max_size =
         MAX_SIZE * sizeof(value_type);
-    inline static constexpr bool        is_static = false;
 
     // Main allocation space
     //
@@ -230,9 +228,9 @@ struct  BestFitAlgo : public S  {
             bool        found_head = false;
 
             if (end_iter != free_blocks_end_.end())  {
-                const pointer   head_ptr =
-                    end_iter->first - end_iter->second;
-                const auto      head_block = free_blocks_assist_.find(head_ptr);
+                const pointer   head_ptr = end_iter->first - end_iter->second;
+                const auto      head_block =
+                    free_blocks_assist_.find(head_ptr);
 
                 if (head_block != free_blocks_assist_.end())  {
                     const size_type new_len =
@@ -460,7 +458,7 @@ struct  FirstFitAlgo : public S  {
 template<typename T, std::size_t MAX_SIZE,
          template<typename, std::size_t> typename STORAGE,
          template<typename> typename ALGO>
-class   FixedSizeAllocator : ALGO<STORAGE<T, MAX_SIZE>>  {
+class   FixedSizeAllocator : private ALGO<STORAGE<T, MAX_SIZE>>  {
 
     using AlgoBase = ALGO<STORAGE<T, MAX_SIZE>>;
 
