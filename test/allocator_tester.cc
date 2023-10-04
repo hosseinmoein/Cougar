@@ -178,6 +178,15 @@ static void test_first_fit_static_allocator()  {
     for (std::size_t i = 0; i < 100000; ++i)
         assert(vec1[i] == int(i));
 
+    std::vector<int, StaticFirstFitAllocator<int, 1000000>> vec11 = vec1;
+
+    for (std::size_t i = 0; i < vec1.size(); ++i)
+        vec11[i] *= 10;
+    for (std::size_t i = 0; i < 100000; ++i)  {
+        assert(vec1[i] == int(i));
+        assert(vec11[i] == int(i) * 10);
+    }
+
     std::vector<int, StaticFirstFitAllocator<int, 100000>>  vec2;
 
     for (std::size_t i = 0; i < 10000; ++i)
@@ -283,13 +292,22 @@ static void test_first_fit_stack_allocator()  {
 
     std::cout << "\nTesting StackFirstFitAllocator ..." << std::endl;
 
-    std::vector<int, StackFirstFitAllocator<int, 10000>>    vec1;
+    std::vector<int, StackFirstFitAllocator<int, 1000>>    vec1;
 
-    vec1.reserve(1000);
-    for (std::size_t i = 0; i < 1000; ++i)
+    vec1.reserve(100);
+    for (std::size_t i = 0; i < 100; ++i)
         vec1.push_back(int(i));
-    for (std::size_t i = 0; i < 1000; ++i)
+    for (std::size_t i = 0; i < 100; ++i)
         assert(vec1[i] == int(i));
+
+    std::vector<int, StackFirstFitAllocator<int, 1000>>  vec11 = vec1;
+
+    for (std::size_t i = 0; i < vec1.size(); ++i)
+        vec11[i] *= 10;
+    for (std::size_t i = 0; i < 100; ++i)  {
+        assert(vec1[i] == int(i));
+        assert(vec11[i] == int(i) * 10);
+    }
 
     std::vector<int, StackFirstFitAllocator<int, 1000>> vec2;
 

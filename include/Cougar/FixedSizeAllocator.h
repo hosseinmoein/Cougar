@@ -54,18 +54,15 @@ struct  StaticStorage  {
         MAX_SIZE * sizeof(value_type);
     inline static constexpr bool        is_static = true;
 
-    StaticStorage() = default;
-    StaticStorage(const StaticStorage &) = delete;
-    StaticStorage(StaticStorage &&) = delete;
-    ~StaticStorage() = default;
-
-    StaticStorage &operator =(const StaticStorage &) = delete;
-    StaticStorage &operator =(StaticStorage &&) = delete;
-
     // Main allocation space
     //
     alignas(value_type[])
     inline static unsigned char buffer_[max_size];
+
+    StaticStorage() = default;
+    StaticStorage(const StaticStorage &) = default;
+    StaticStorage(StaticStorage &&) = default;
+    ~StaticStorage() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -80,18 +77,21 @@ struct  StackStorage  {
         MAX_SIZE * sizeof(value_type);
     inline static constexpr bool        is_static = false;
 
-    StackStorage() = default;
-    StackStorage(const StackStorage &) = delete;
-    StackStorage(StackStorage &&) = delete;
-    ~StackStorage() = default;
-
-    StackStorage &operator =(const StackStorage &) = delete;
-    StackStorage &operator =(StackStorage &&) = delete;
-
     // Main allocation space
     //
     alignas(value_type[])
     unsigned char buffer_[max_size];
+
+    StackStorage() = default;
+    StackStorage(const StackStorage &that)  {
+
+        std::memcpy(buffer_, that.buffer_, max_size);
+    }
+    StackStorage(StackStorage &&that)  {
+
+        std::memcpy(buffer_, that.buffer_, max_size);
+    }
+    ~StackStorage() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -324,7 +324,7 @@ struct  FirstFitStaticBase : public StaticStorage<T, MAX_SIZE>  {
     // The bitmap to indicate which slots are in use.
     //
     alignas(value_type[])
-    inline static unsigned char in_use_[MAX_SIZE];
+    inline static unsigned char in_use_[max_size];
 
     // Pointer to the first free slot.
     //
@@ -340,6 +340,9 @@ struct  FirstFitStaticBase : public StaticStorage<T, MAX_SIZE>  {
             return (0);
         });
     }
+    FirstFitStaticBase(const FirstFitStaticBase &that) = default;
+    FirstFitStaticBase(FirstFitStaticBase &&that) = default;
+    ~FirstFitStaticBase() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -358,7 +361,7 @@ struct  FirstFitStackBase : public StackStorage<T, MAX_SIZE>  {
     // The bitmap to indicate which slots are in use.
     //
     alignas(value_type[])
-    unsigned char in_use_[MAX_SIZE];
+    unsigned char in_use_[max_size];
 
     // Pointer to the first free slot.
     //
@@ -366,6 +369,17 @@ struct  FirstFitStackBase : public StackStorage<T, MAX_SIZE>  {
     unsigned char *first_free_ptr_ { in_use_ };
 
     FirstFitStackBase() : Base()  { std::memset(in_use_, FREE_, MAX_SIZE); }
+    FirstFitStackBase(const FirstFitStackBase &that)
+        : Base(that), first_free_ptr_ (that.first_free_ptr_)  {
+
+        std::memcpy(in_use_, that.in_use_, max_size);
+    }
+    FirstFitStackBase(FirstFitStackBase &&that)
+        : Base(that), first_free_ptr_ (that.first_free_ptr_)  {
+
+        std::memcpy(in_use_, that.in_use_, max_size);
+    }
+    ~FirstFitStackBase() = default;
 };
 
 // ----------------------------------------------------------------------------
@@ -378,7 +392,7 @@ struct  FirstFitAlgo : public S  {
     using size_type = Base::size_type;
     using pointer = unsigned char *;
 
-    FirstFitAlgo() : Base()  {  }
+    FirstFitAlgo() = default;
     ~FirstFitAlgo() = default;
 
     // Like malloc
@@ -489,15 +503,10 @@ public:
 
 public:
 
-    FixedSizeAllocator() : AlgoBase()  {  }
-    FixedSizeAllocator(const FixedSizeAllocator &that) = delete;
-    FixedSizeAllocator(FixedSizeAllocator &&) = delete;
+    FixedSizeAllocator() = default;
+    FixedSizeAllocator(const FixedSizeAllocator &) = default;
+    FixedSizeAllocator(FixedSizeAllocator &&) = default;
     ~FixedSizeAllocator() = default;
-
-    FixedSizeAllocator &
-    operator =(FixedSizeAllocator &&) = delete;
-    FixedSizeAllocator &
-    operator =(const FixedSizeAllocator &) = delete;
 
     template<typename U>
     FixedSizeAllocator(const FixedSizeAllocator<U, MAX_SIZE, STORAGE, ALGO> &) {
