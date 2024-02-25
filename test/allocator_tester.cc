@@ -255,7 +255,7 @@ static void test_first_fit_static_allocator()  {
 
     // Test how badly it fragments the memory
     //
-    FirstFitAlgo<FirstFitStaticBase<int, 10000>>            allocator;
+    FirstFitAlgo<FirstFitStatic<int, 10000>>                allocator;
     std::vector<std::pair<unsigned char *, std::size_t>>    ptr_vec;
     std::mt19937                                            gen { 98 };
 

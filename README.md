@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <img src="docs/Cougar.png" alt="Allocator Cougar" width="400" longdesc="https://htmlpreview.github.io/?https://github.com/hosseinmoein/Cougar/blob/master/README.md"/>
 
 This repo includes several STL conformant allocators. There are two categories of allocators here:
-1. Stack or Static based fixed size allocators. In this category you pre-allocate a fixed size of memory block either on the stack or statically. So you can have STL containers that are based on stack memory, for example. One of the side effects of these allocators is to overcome deficiencies in containers like <I>maps</I> and <I>lists</I> where their memory by default is not cache-friendly.
+1. Stack or Static based fixed size allocators. In this category you pre-allocate a fixed size memory block either on the stack or statically. So you can have STL containers that are based on stack memory, for example. One of the side effects of these allocators is to overcome deficiencies in containers like <I>maps</I> and <I>lists</I> where their memory by default is not cache-friendly.
 2. Custom Aligned allocator. This allocator allows you to allocate memory on a custom boundary. This way you can take advantage of SIMD instructions and techniques. 
 
 Please see the [tester file](test/allocator_tester.cc) for code samples.

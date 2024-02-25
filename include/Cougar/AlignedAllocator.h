@@ -91,7 +91,8 @@ public:
     [[nodiscard]] inline constexpr const_pointer
     address(const_reference cr) const  { return (std::addressof(cr)); }
 
-    [[nodiscard]] constexpr size_type max_size() const  {
+    [[nodiscard]] constexpr size_type
+    max_size() const  {
 
         return (std::numeric_limits<size_type>::max() / sizeof(value_type));
     }
@@ -118,31 +119,33 @@ public:
 
 public:
 
-    inline void construct(pointer p, const_reference val) const  {
+    inline void
+    construct(pointer p, const_reference val) const  {
 
         new (static_cast<void *>(p)) value_type(val);
     }
-    inline void construct(pointer p) const  {
-
-        new (static_cast<void *>(p)) value_type();
-    }
+    inline void
+    construct(pointer p) const  { new (static_cast<void *>(p)) value_type(); }
 
     template<typename U, typename ... Ts >
-    inline void construct(U *p, Ts && ... args) const  {
+    inline void
+    construct(U *p, Ts && ... args) const  {
 
         new (static_cast<void *>(p)) U(std::forward<Ts>(args) ...);
     }
 
-    inline void destroy(pointer p) const  { p->~value_type(); }
+    inline void
+    destroy(pointer p) const  { p->~value_type(); }
 
     template<typename U>
-    inline void destroy(U *p) const  { p->~U(); }
+    inline void
+    destroy(U *p) const  { p->~U(); }
 
-    [[nodiscard]] inline pointer allocate(size_type n_items) const  {
+    [[nodiscard]] inline pointer
+    allocate(size_type n_items) const  {
 
         if (n_items == 0)  return (nullptr);
-        if (n_items > max_size())
-            throw std::bad_array_new_length();
+        if (n_items > max_size())  throw std::bad_array_new_length();
 
         return(reinterpret_cast<pointer>(
                    ::operator new[](n_items * sizeof(value_type),
@@ -172,14 +175,10 @@ public:
 // ----------------------------------------------------------------------------
 
 template<typename T, std::size_t A>
-struct  allocator_declare  {
-    using type = AlignedAllocator<T, A>;
-};
+struct  allocator_declare  { using type = AlignedAllocator<T, A>; };
 
 template<typename T>
-struct  allocator_declare<T, 0>  {
-    using type = std::allocator<T>;
-};
+struct  allocator_declare<T, 0>  { using type = std::allocator<T>; };
 
 } // namespace hmcgr
 
